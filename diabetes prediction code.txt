@@ -1,0 +1,85 @@
+# Python libraries
+# Classic,data manipulation and linear algebra
+import pandas as pd
+import numpy as np
+
+# Plots
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+plt.style.use('fivethirtyeight')
+
+#ignore warning messages 
+import warnings
+warnings.filterwarnings('ignore')
+diabetes_data = pd.read_csv("Desktop/diabetes-1.csv")
+print(diabetes_data.columns)
+diabetes_data.head(15)
+print("dimension of diabetes data: {}".format(diabetes_data.shape))
+diabetes_data.info()
+dataset = diabetes_data.copy()
+dataset
+plt.figure(figsize=(12,8))
+corr = dataset.corr()
+sns.heatmap(corr,annot=True,cmap ='gnuplot')
+plt.show()
+print(diabetes_data.groupby('Outcome').size())
+# Draw a plot to check difference between both the variables as 
+import seaborn as sns
+sns.countplot(diabetes_data['Outcome'],label="Count")
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(diabetes_data.loc[:, diabetes_data.columns != 'Outcome'], diabetes_data['Outcome'], stratify=diabetes_data['Outcome'], random_state=66)
+# Here we considered multi-layer perceptron (MLP) algorithm as
+
+from sklearn.neural_network import MLPClassifier
+
+mlp = MLPClassifier(random_state=42)
+mlp.fit(X_train, y_train)
+
+print("Accuracy on training set: {:.2f}".format(mlp.score(X_train, y_train)))
+print("Accuracy on test set: {:.2f}".format(mlp.score(X_test, y_test)))
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+
+mlp = MLPClassifier(random_state=0)
+mlp.fit(X_train_scaled, y_train)
+
+print("Accuracy on training set: {:.3f}".format(
+    mlp.score(X_train_scaled, y_train)))
+print("Accuracy on test set: {:.3f}".format(mlp.score(X_test_scaled, y_test)))
+mlp = MLPClassifier(max_iter=1000, random_state=0)
+mlp.fit(X_train_scaled, y_train)
+
+print("Accuracy on training set: {:.3f}".format(
+    mlp.score(X_train_scaled, y_train)))
+print("Accuracy on test set: {:.3f}".format(mlp.score(X_test_scaled, y_test)))
+mlp = MLPClassifier(max_iter=1000, alpha=1, random_state=0)
+mlp.fit(X_train_scaled, y_train)
+
+print("Accuracy on training set: {:.3f}".format(
+    mlp.score(X_train_scaled, y_train)))
+print("Accuracy on test set: {:.3f}".format(mlp.score(X_test_scaled, y_test)))
+from sklearn.neural_network import MLPClassifier
+
+mlp = MLPClassifier(hidden_layer_sizes=(9,9,9),max_iter=500)
+mlp.fit(X_train,y_train)
+predictions = mlp.predict(X_test)
+from sklearn.metrics import classification_report,confusion_matrix
+print(confusion_matrix(y_test,predictions))
+print(classification_report(y_test,predictions))
+len(mlp.coefs_)
+len(mlp.coefs_[1])
+len(mlp.intercepts_[0])
+test = pd.read_csv("Desktop/test.csv")
+test
+my_pred=mlp.predict(test)
+print(my_pred)
+for i in my_pred:
+    if(i==0):
+        print("normal")
+    else:    
+         print("diabetes")
